@@ -6,25 +6,40 @@ export const createOrder = async (req, res) => {
   try {
     const { items, shippingInfo } = req.body;
 
-    // Calculate total price
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'No items in cart' });
+    }
+
     let totalPrice = 0;
     const orderItems = [];
 
     for (const item of items) {
+      if (!item || !item.productId) {
+        return res.status(400).json({ message: 'Invalid item' });
+      }
+
+      const quantity = Number(item.quantity);
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({ message: 'Invalid quantity' });
+      }
+
       const product = await Product.findById(item.productId);
       if (!product) {
         return res.status(404).json({ message: `Product not found: ${item.productId}` });
+      }
+      if (product.inStock === false) {
+        return res.status(400).json({ message: `Product out of stock: ${product.name}` });
       }
 
       orderItems.push({
         productId: product._id,
         name: product.name,
         price: product.price,
-        quantity: item.quantity,
+        quantity,
         image: product.image
       });
 
-      totalPrice += product.price * item.quantity;
+      totalPrice += product.price * quantity;
     }
 
     const order = await Order.create({

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Plus, CreditCard as Edit, Trash2, Eye, X } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +27,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/products');
+      const response = await axios.get(`${API_URL}/products`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -44,9 +46,9 @@ const Products = () => {
       };
 
       if (editingProduct) {
-        await axios.put(`http://localhost:5000/api/products/${editingProduct._id}`, productData);
+        await axios.put(`${API_URL}/products/${editingProduct._id}`, productData);
       } else {
-        await axios.post('http://localhost:5000/api/products', productData);
+        await axios.post(`${API_URL}/products`, productData);
       }
       
       fetchProducts();
@@ -73,7 +75,7 @@ const Products = () => {
   const handleDelete = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${productId}`);
+        await axios.delete(`${API_URL}/products/${productId}`);
         fetchProducts();
       } catch (error) {
         console.error('Error deleting product:', error);

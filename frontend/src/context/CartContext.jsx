@@ -2,8 +2,19 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 
 const CartContext = createContext();
 
+const getInitialItems = () => {
+  try {
+    const raw = localStorage.getItem('cart');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
 const initialState = {
-  items: JSON.parse(localStorage.getItem('cart')) || [],
+  items: getInitialItems(),
   total: 0
 };
 

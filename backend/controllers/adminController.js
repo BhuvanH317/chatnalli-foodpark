@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
+import jwt from 'jsonwebtoken';
 
 // Admin login
 export const adminLogin = async (req, res) => {

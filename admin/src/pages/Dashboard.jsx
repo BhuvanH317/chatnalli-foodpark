@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Package, ShoppingBag, DollarSign, TrendingUp } from 'lucide-react';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -14,7 +15,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/dashboard');
+        const response = await axios.get(`${API_URL}/admin/dashboard`);
         setStats(response.data);
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);

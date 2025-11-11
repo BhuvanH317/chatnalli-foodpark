@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const Checkout = () => {
         shippingInfo: formData
       };
 
-      await axios.post('http://localhost:5000/api/orders', orderData);
+      await axios.post(`${API_URL}/orders`, orderData);
       
       clearCart();
       navigate('/profile', { 
@@ -58,10 +59,13 @@ const Checkout = () => {
     }
   };
 
-  if (items.length === 0) {
-    navigate('/cart');
-    return null;
-  }
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate('/cart');
+    }
+  }, [items.length, navigate]);
+
+  if (items.length === 0) return null;
 
   return (
     <div className="min-h-screen py-8">
